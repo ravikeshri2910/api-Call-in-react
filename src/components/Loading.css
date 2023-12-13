@@ -1,0 +1,34 @@
+.backdrop{
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* top: 30%;
+    left: 40%; */
+    width: 100%;
+    height: 100vh;
+    z-index: 20;
+    /* background-color: rgba(0, 0, 0, .75); */
+}
+
+.backdrop img{
+    width: 20%;
+    border-radius: 50%;
+    position: relative;
+    animation: moveCart 0.5s forwards;
+    /* top: 10vh;
+    left: 25%; */
+    top: 30%;
+    left: 40%;
+
+}
+
+@keyframes moveCart {
+    from {
+        /* Starting position */
+        transform: translateY(0);
+    }
+    to {
+        /* Ending position */
+        transform: translateY(25%);
+    }
+}
