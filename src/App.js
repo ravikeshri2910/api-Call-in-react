@@ -53,24 +53,37 @@ function App() {
       console.log('here')
       setIserr(null)
       setIsLoading(true)
-      const response = await fetch(`https://swapi.dev/api/films/`);
+      // const response = await fetch(`https://swapi.dev/api/films/`);
+      const response = await fetch(`https://react-http-8fcff-default-rtdb.firebaseio.com/movies.json`);
       
       if (!response.ok) {
         throw new Error('Network response was not ok.');
       }
   
       const data = await response.json();
+
+      const loadedData = []
+
+      for(const key in data){
+        loadedData.push({
+          id:key,
+          title: data[key].title,
+          openingText : data[key].description,
+          releaseDate : data[key].releaseDate
+        })
+      }
+      console.log('data'+ JSON.stringify(data))
   
-      const transformedData = data.results.map((newData) => {
-        return {
-          id: newData.episode_id,
-          title: newData.title,
-          openingText: newData.opening_crawl,
-          releaseDate: newData.release_date
-        };
-      });
+      // const transformedData = data.results.map((newData) => {
+      //   return {
+      //     id: newData.episode_id,
+      //     title: newData.title,
+      //     openingText: newData.opening_crawl,
+      //     releaseDate: newData.release_date
+      //   };
+      // });
       setIsLoading(false)
-      setMovies(transformedData);
+      setMovies(loadedData);
     } catch (error) {
       // Handle errors here
       setIserr(true)
@@ -79,9 +92,25 @@ function App() {
     setIsLoading(false)
   };
 
-  // useEffect(()=>{
-  //   dataFatchHandle()
-  // },[])
+  useEffect(()=>{
+    dataFatchHandle()
+  },[])
+
+  const handleFormSUbmit = async (obj)=>{
+
+    const res = await fetch(`https://react-http-8fcff-default-rtdb.firebaseio.com/movies.json`,{
+      method:'POST',
+      body: JSON.stringify(obj),
+      headers:{
+        'content-type' : 'application/json'
+      }
+    })
+
+    const data = res.json();
+    console.log('handleFormSUbmit' + data)
+  }
+
+  
   
 
   return (
@@ -91,7 +120,7 @@ function App() {
 
       {isLoading && <Model/>}
       <section>
-        <Form/>
+        <Form onFormSubmit = {handleFormSUbmit} />
       </section>
       <section>
         <button onClick={dataFatchHandle}>Fetch Movies</button>
