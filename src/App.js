@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
 import MoviesList from './components/MoviesList';
+import Err from './components/Err';
 import './App.css';
 import Model from './Model/Model';
+import Form from './components/Form'
 
 function App() {
 
   const [movies, setMovies] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [iserr, setIserr] = useState(null)
 
   // const dummyMovies = [
   //   {
@@ -48,6 +51,7 @@ function App() {
   const dataFatchHandle = async () => {
     try {
       console.log('here')
+      setIserr(null)
       setIsLoading(true)
       const response = await fetch(`https://swapi.dev/api/films/`);
       
@@ -69,13 +73,15 @@ function App() {
       setMovies(transformedData);
     } catch (error) {
       // Handle errors here
+      setIserr(true)
       console.error('Error fetching data:', error);
     }
+    setIsLoading(false)
   };
 
-  useEffect(()=>{
-    dataFatchHandle()
-  },[])
+  // useEffect(()=>{
+  //   dataFatchHandle()
+  // },[])
   
 
   return (
@@ -85,10 +91,15 @@ function App() {
 
       {isLoading && <Model/>}
       <section>
+        <Form/>
+      </section>
+      <section>
         <button onClick={dataFatchHandle}>Fetch Movies</button>
       </section>
       <section>
-        <MoviesList movies={movies} />
+       {!isLoading && iserr && <Err/>} 
+       {!isLoading && !iserr && <MoviesList movies={movies} />} 
+        {/* <MoviesList movies={movies} /> */}
       </section>
     </React.Fragment>
   );
